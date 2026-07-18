@@ -371,6 +371,7 @@ class Messenger {
     if(comboCount > 0){
       var combo = combos[--comboCount];
       if(combo == null) return;
+      battleStats.unlockCombo(combo);
       var inc = combo.getFullScore();
       messenger.animeScoreInc(1, preScore, inc);
       var chars = combo.characters;
@@ -406,6 +407,7 @@ class Messenger {
     }
   }
   notifyFinal(){
+    battleStats.recordGame(model.player1);
     var msg = document.getElementById("finalmsg");
     var div = document.getElementById("finalcontainer");
     if(model.player1.score > model.player0.score){
@@ -602,13 +604,14 @@ class View {
   }
 }
 
-var sound, combos, model, controller, spmanager, messenger, view, oppoinfo, playerinfo, obtainVector;
+var sound, combos, model, controller, spmanager, messenger, view, oppoinfo, playerinfo, obtainVector, battleStats;
 var AI_LEVEL, COMBO_VOICE, SP_CARDS;
 function setup(){
   sound = new Sound();
   combos = new Combos();
   obtainVector = new ObtainVector();
   spmanager = new SPManager();
+  battleStats = new BattleStats();
   messenger = new Messenger();
   model = new Model();
   controller = new Controller();
@@ -622,9 +625,23 @@ function setup(){
     document.getElementById(configs[i]).checked = true;
   showPage("configurator");
   document.getElementById("comfirmSetting").addEventListener("click", controller.configure);
+  document.getElementById("battleStatsButton").addEventListener("click", function(){ battleStats.show(); });
+  document.getElementById("battleStatsClose").addEventListener("click", function(){ battleStats.hide(); });
+  document.getElementById("unlockAllSpecials").addEventListener("click", function(){ battleStats.unlockAllSpecials(); });
+  document.getElementById("unlockAllSpecials").addEventListener("keydown", function(event){
+    if(event.key == "Enter" || event.key == " ") battleStats.unlockAllSpecials();
+  });
+  document.getElementById("resetAllData").addEventListener("click", function(){ battleStats.resetAllData(); });
+  document.getElementById("specialRulesButton").addEventListener("click", function(){
+    document.getElementById("specialRulesPanel").style.visibility = "visible";
+  });
+  document.getElementById("specialRulesClose").addEventListener("click", function(){
+    document.getElementById("specialRulesPanel").style.visibility = "hidden";
+  });
 }
 function showPage(id){
   var ids = ["configurator", "spselection"];
+  document.getElementById("gameIdentity").style.display = id == "configurator" ? "block" : "none";
   if(id == "main")
     document.getElementById("main").style.display = "block";
   else

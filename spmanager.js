@@ -7,13 +7,26 @@ SPECIAL_CHAR_LIST = [
 
 class SPManager{
   constructor(){}
+  getSpecialPack(id){
+    var match = id.match(/([123])(?:[ab])?$/);
+    return match == null ? null : parseInt(match[1]);
+  }
+  isActiveSpecial(id){
+    return model.pack.includes(this.getSpecialPack(id));
+  }
   setup(){
-    this.specialRepoIDs = SPECIAL_CHAR_LIST[model.pack[0]-1].concat(SPECIAL_CHAR_LIST[model.pack[1]-1]);
-    this.userSpecialRepoIDs = this.loadSpecials("qqxspecials");
+    this.specialRepoIDs = [];
+    for(var i=0; i<model.pack.length; i++)
+      this.specialRepoIDs = this.specialRepoIDs.concat(SPECIAL_CHAR_LIST[model.pack[i]-1]);
+    this.specialRepoIDs = this.specialRepoIDs.filter(function(id){ return spmanager.isActiveSpecial(id); });
+    this.userSpecialRepoIDs = this.loadSpecials("qqxspecials").filter(function(id){ return spmanager.isActiveSpecial(id); });
     if(this.userSpecialRepoIDs.length > 0)
-      model.player1.specialIDs = this.loadSpecials("qqxspecialpicks");
+      model.player1.specialIDs = this.loadSpecials("qqxspecialpicks").filter(function(id){ return spmanager.isActiveSpecial(id); });
     else
+    {
+      model.player1.specialIDs = [];
       this.userSpecialRepoIDs.push(this.specialRepoIDs[getRandom(this.specialRepoIDs.length)]);
+    }
     //this.userSpecialRepoIDs = this.specialRepoIDs;
     this.userSpecialRepository = new SpecialRepository();
     this.userSpecialRepository.init(this.userSpecialRepoIDs);
@@ -331,37 +344,39 @@ class SPManager{
       this.saveSpecials("qqxspecialpicks", model.player1.specialIDs);
       return;
     }
-    var arrs = [[],[]];
-    for(var i=0; i<carray.length; i++)
-      if(carray[i].includes(model.pack[0]))
-        arrs[0].push(carray[i]);
-      else
-        if(carray[i].includes(model.pack[1]))
-          arrs[1].push(carray[i]);
-        else
-          alert("Illegal SPChar ID:" + carray[i]);
-    for(var i=0; i<2; i++)
+    var arrs = model.pack.map(function(){ return []; });
+    for(var i=0; i<carray.length; i++){
+      var found = false;
+      for(var j=0; j<model.pack.length; j++)
+        if(this.getSpecialPack(carray[i]) == model.pack[j]){
+          arrs[j].push(carray[i]);
+          found = true;
+          break;
+        }
+      if(!found)
+        alert("Illegal SPChar ID:" + carray[i]);
+    }
+    for(var i=0; i<model.pack.length; i++)
       setCookie(type+model.pack[i], arrs[i]);
   }
   loadSpecials(type){
-    return getCookie(type+model.pack[0]).concat(getCookie(type+model.pack[1]));
+    var result = [];
+    for(var i=0; i<model.pack.length; i++)
+      result = result.concat(getCookie(type+model.pack[i]));
+    return result;
   }
   awardSpecials(){
     var minscore = BONUS_THRESHOLDS[AI_LEVEL-1] + (model.player1.specialIDs.length - model.player0.specialIDs.length) * 5;
     minscore = minscore>200? 200: minscore;
     if(model.player1.score >= minscore){
-      var uspecials = this.userSpecialRepoIDs;
-      var ulen = uspecials.length;
-      var clen = this.specialRepoIDs.length;
-      if(ulen < clen){
-        var rand = getRandom(clen - ulen);
-        var award;
-        for(var i=0, idx=-1; i<clen; i++)
-          if(!uspecials.includes(this.specialRepoIDs[i]) && ++idx == rand){
-              award = this.specialRepoIDs[i];
-              break;
-            }
+      var uspecials = this.userSpecialRepoIDs.filter(function(id){ return spmanager.isActiveSpecial(id); });
+      var candidates = this.specialRepoIDs.filter(function(id){
+        return spmanager.isActiveSpecial(id) && !uspecials.includes(id);
+      });
+      if(candidates.length > 0){
+        var award = candidates[getRandom(candidates.length)];
         uspecials.push(award);
+        this.userSpecialRepoIDs = uspecials;
         this.userSpecialRepository.addChar(this.createSpecial(award));
         this.saveSpecials("qqxspecials", uspecials);
         messenger.notifyAward(minscore, award);

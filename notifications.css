@@ -202,23 +202,90 @@
 }
 
 #configurator {
-  position: relative;
-  min-height: 50%;
-  max-height: 70%;
-  width: 60%;
-  top: 20%;
+  position: absolute;
+  width: min(1040px, 88%);
+  top: calc(50% - 3.25rem);
+  left: 50%;
+  transform: translate(-50%, -50%);
   margin: auto;
   align-items: center;
+  gap: 1.15rem;
   overflow: visible;
   opacity: 1;
 }
 #configurator div{
   display: inline-block;
-  font-size: 1.5vw;
+  font-size: clamp(0.9rem, 1.25vw, 1.25rem);
+}
+.config-row {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+}
+.config-label {
+  color: var(--text-shadow-color);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+.config-row .segmented-control {
+  width: 100%;
+  display: flex !important;
+  gap: 0.55rem;
+  color: var(--text-shadow-color);
+}
+.config-row .segmented-control > label {
+  flex: 1;
+  width: auto !important;
+  height: 2.88rem;
+  border: 1px solid var(--text-shadow-color);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+}
+.config-row .segmented-control > label::before,
+.config-row .segmented-control > label::after {
+  display: none !important;
+}
+.config-row .segmented-control > input:nth-child(1):checked ~ label:nth-of-type(1),
+.config-row .segmented-control > input:nth-child(2):checked ~ label:nth-of-type(2),
+.config-row .segmented-control > input:nth-child(3):checked ~ label:nth-of-type(3),
+.config-row .segmented-control > input:nth-child(4):checked ~ label:nth-of-type(4) {
+  color: white;
+  background: var(--text-shadow-color);
+  font-size: 0;
+  line-height: 0;
+}
+.config-row .segmented-control > input:nth-child(1):checked ~ label:nth-of-type(1)::after,
+.config-row .segmented-control > input:nth-child(2):checked ~ label:nth-of-type(2)::after,
+.config-row .segmented-control > input:nth-child(3):checked ~ label:nth-of-type(3)::after,
+.config-row .segmented-control > input:nth-child(4):checked ~ label:nth-of-type(4)::after {
+  content: attr(data-value);
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  height: 2.88rem !important;
+  padding: 0;
+  color: white;
+  font-size: clamp(0.9rem, 1.25vw, 1.25rem);
+  line-height: 1.15;
+  opacity: 1 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+}
+.config-row .segmented-control > label:hover {
+  background: rgba(40, 27, 17, 0.12);
 }
 .confirmbutton{
   width: 35%;
-  padding: 1vw 0;
+  padding: 0.78rem 0;
   border: 1px solid  var(--text-shadow-color);
   color: var(--text-shadow-color);
   cursor: pointer;
@@ -226,6 +293,327 @@
 .confirmbutton:hover, .confirmbutton:active {
   background-color: var(--text-shadow-color);
   color: white;
+}
+
+#configactions {
+  width: 100%;
+  display: flex !important;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.35rem;
+  padding-left: 9.8rem;
+}
+#configactions .confirmbutton {
+  display: inline-block;
+  flex: 1;
+  width: auto;
+  border-radius: 3px;
+  font-weight: 600;
+}
+#battleStatsButton {
+  background: rgba(249, 235, 174, 0.28);
+}
+#comfirmSetting {
+  color: white;
+  background: var(--text-shadow-color);
+  border: 2px solid var(--text-shadow-color);
+  box-shadow: 0 4px 12px rgba(40, 27, 17, 0.28);
+  font-size: clamp(1rem, 1.5vw, 1.4rem) !important;
+}
+#comfirmSetting:hover, #comfirmSetting:active {
+  background: #4b3020;
+  transform: translateY(-1px);
+}
+#gameIdentity {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  width: 100%;
+  padding: 0.65rem 1rem 0.75rem;
+  color: white;
+  background: var(--text-shadow-color);
+  text-align: center;
+}
+#gameBrand {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: "FangSong", "Microsoft Yahei", serif;
+}
+#gameBrand img {
+  width: clamp(30px, 2.5vw, 42px);
+  height: clamp(30px, 2.5vw, 42px);
+  object-fit: contain;
+}
+#gameBrand span {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  letter-spacing: 0.18em;
+}
+#gameCredit {
+  display: block !important;
+  margin: 0.25rem auto 0;
+  max-width: 920px;
+  font-size: clamp(0.75rem, 1vw, 0.95rem) !important;
+  line-height: 1.6;
+}
+#gameCredit a {
+  color: white;
+  font-weight: 600;
+}
+#battleStatsPanel {
+  position: fixed;
+  z-index: 3000;
+  background: rgba(20, 12, 6, 0.78);
+  visibility: hidden;
+  overflow: auto;
+  padding: 5vh 5vw;
+}
+#specialRulesPanel {
+  position: fixed;
+  z-index: 3000;
+  background: rgba(20, 12, 6, 0.78);
+  visibility: hidden;
+  overflow: auto;
+  padding: 5vh 5vw;
+}
+#specialRulesCard {
+  position: relative;
+  width: min(680px, 92vw);
+  max-height: 90vh;
+  margin: auto;
+  padding: 1.5rem 2rem 1.75rem;
+  overflow: auto;
+  color: var(--text-hl-color);
+  background: var(--final-background);
+  border: 1px solid var(--text-color);
+  box-shadow: 0 0 24px rgba(0,0,0,0.55);
+  text-align: left;
+  line-height: 1.65;
+}
+#specialRulesCard h2,
+#specialRulesCard h3 {
+  text-align: center;
+}
+#specialRulesCard h2 {
+  margin-top: 2.2rem;
+}
+#specialRulesCard h3 {
+  margin-bottom: 0.35rem;
+}
+#specialRulesCard ul {
+  margin-top: 0.35rem;
+  padding-left: 1.5rem;
+}
+#specialRulesCard li + li {
+  margin-top: 0.35rem;
+}
+#specialRulesClose {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.8rem;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+#specialRulesCard > #unlockAllSpecials {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.8rem;
+  z-index: 2;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--text-color);
+  border-radius: 3px;
+  color: var(--text-hl-color);
+  background: rgba(40, 27, 17, 0.78);
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+#specialRulesCard > #unlockAllSpecials:hover {
+  color: white;
+  background: var(--text-shadow-color);
+}
+#specialRulesButton {
+  border: 0;
+  padding: 0;
+  color: var(--text-shadow-color);
+  background: transparent;
+  font: inherit;
+  writing-mode: inherit;
+  cursor: pointer;
+}
+#specialRulesButton:hover {
+  color: var(--text-hl-color);
+}
+#battleStatsCard {
+  position: relative;
+  width: min(760px, 92vw);
+  max-height: 90vh;
+  margin: auto;
+  padding: 2rem;
+  overflow: auto;
+  color: var(--text-hl-color);
+  background: var(--final-background);
+  border: 1px solid var(--text-color);
+  box-shadow: 0 0 24px rgba(0,0,0,0.55);
+  text-align: left;
+}
+#battleStatsCard h2, #battleStatsCard h3 {
+  text-align: center;
+}
+#battleStatsCard h2 {
+  margin-top: 2.2rem;
+}
+#battleStatsTools {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.8rem;
+  display: flex;
+  gap: 0.45rem;
+}
+#battleStatsTools button {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--text-color);
+  border-radius: 3px;
+  color: var(--text-hl-color);
+  background: rgba(40, 27, 17, 0.78);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+#battleStatsTools button:hover {
+  color: white;
+  background: var(--text-shadow-color);
+}
+#battleStatsClose {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.8rem;
+  font-size: 2rem;
+  cursor: pointer;
+}
+#battleStatsSummary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  text-align: center;
+}
+#battleStatsBestCombos, #battleStatsCombos {
+  line-height: 1.8;
+}
+#battleStatsCombos {
+  display: block;
+}
+#battleStatsBestCombos .stats-combo-card,
+#battleStatsCombos .stats-combo-card {
+  width: 100%;
+  height: 4.25rem;
+  margin: 0 0 0.65rem;
+  color: var(--text-hl-color);
+}
+#battleStatsCard .stats-combo-card > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: visible;
+}
+#battleStatsCard .stats-combo-card .thumbnailcard {
+  flex: 0 0 auto;
+  float: none;
+  width: 2rem;
+  height: 3rem;
+}
+#battleStatsCard .stats-combo-card .thumbnailcard:not(:first-child) {
+  margin-left: -1rem;
+  margin-right: 0;
+}
+#battleStatsCard .stats-combo-card #combocardinfo {
+  font-size: 0.82rem;
+  padding-bottom: 0.1rem;
+  margin-bottom: 0.1rem;
+}
+#battleStatsCard .stats-combo-card #combocardchars span {
+  font-size: 0.68rem;
+}
+#battleStatsCard .stats-combo-card #combocardchars {
+  line-height: 1.15;
+  transform: translateY(-0.2rem);
+}
+.stats-locked-combo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+}
+
+.selectionarea > div,
+#battleStatsPanel,
+#battleStatsCard,
+#specialRulesPanel,
+#specialRulesCard {
+  scrollbar-width: thin;
+  scrollbar-color: #9b7a57 rgba(40, 27, 17, 0.45);
+}
+.selectionarea > div::-webkit-scrollbar,
+#battleStatsPanel::-webkit-scrollbar,
+#battleStatsCard::-webkit-scrollbar,
+#specialRulesPanel::-webkit-scrollbar,
+#specialRulesCard::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.selectionarea > div::-webkit-scrollbar-track,
+#battleStatsPanel::-webkit-scrollbar-track,
+#battleStatsCard::-webkit-scrollbar-track,
+#specialRulesPanel::-webkit-scrollbar-track,
+#specialRulesCard::-webkit-scrollbar-track {
+  background: rgba(40, 27, 17, 0.45);
+  border-radius: 8px;
+}
+.selectionarea > div::-webkit-scrollbar-thumb,
+#battleStatsPanel::-webkit-scrollbar-thumb,
+#battleStatsCard::-webkit-scrollbar-thumb,
+#specialRulesPanel::-webkit-scrollbar-thumb,
+#specialRulesCard::-webkit-scrollbar-thumb {
+  background: #9b7a57;
+  border: 2px solid #4a3525;
+  border-radius: 8px;
+}
+.selectionarea > div::-webkit-scrollbar-thumb:hover,
+#battleStatsPanel::-webkit-scrollbar-thumb:hover,
+#battleStatsCard::-webkit-scrollbar-thumb:hover,
+#specialRulesPanel::-webkit-scrollbar-thumb:hover,
+#specialRulesCard::-webkit-scrollbar-thumb:hover {
+  background: #c3a47d;
+}
+.battle-stat-value {
+  font-size: 1.4rem;
+  color: white;
+}
+@media (max-width: 700px) {
+  #battleStatsCard { padding: 1.4rem; }
+  #specialRulesCard { padding: 1.25rem 1.2rem 1.4rem; }
+  #battleStatsTools { position: static; justify-content: center; margin-bottom: 0.5rem; }
+  #battleStatsCard h2 { margin-top: 0.5rem; }
+  .stats-combo-card > div:first-child { width: 42%; }
+  .stats-combo-card > div:last-child { width: 58%; }
+  #configurator { top: calc(50% - 2.75rem); width: 94%; gap: 0.75rem; }
+  .config-row { gap: 0.4rem; }
+  .config-row { grid-template-columns: 6.3rem minmax(0, 1fr); }
+  .config-label { font-size: 0.78rem !important; }
+  .config-row .segmented-control { gap: 0.25rem; }
+  #configactions .confirmbutton { width: 46%; }
+  #configactions { padding-left: 6.7rem; }
+  #gameIdentity { padding: 0.45rem 0.6rem 0.55rem; }
 }
 
 .cover{

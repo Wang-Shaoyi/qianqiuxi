@@ -266,9 +266,8 @@ class Controller{
   }
   configure(){
     var pack = getInput("packinput");
-    var p1 = parseInt(pack.charAt(1));
-    var p2 = parseInt(pack.charAt(2));
-    model.setPack(p1, p2);
+    var packs = pack.substring(1).split("").map(Number);
+    model.setPack(packs);
     var ai = getInput("aiinput");
     AI_LEVEL = parseInt(ai.charAt(2));
     COMBO_VOICE = getInput("voiceinput");
@@ -289,6 +288,7 @@ class Controller{
     window.scrollTo(0,document.body.scrollHeight);
   }
   gamestart(){
+    battleStats.beginGame();
     if(spmanager.userSpecialRepoIDs.length > 0)
       spmanager.saveSpecials();
     spmanager.setAISpecials();

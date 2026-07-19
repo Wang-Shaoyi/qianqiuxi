@@ -472,6 +472,27 @@
 #battleStatsCard h2 {
   margin-top: 2.2rem;
 }
+#battleStatsTabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+  margin: 0.8rem 0 1rem;
+}
+#battleStatsTabs button {
+  min-height: 2.35rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #9b7a57;
+  border-radius: 3px;
+  color: var(--text-hl-color);
+  background: rgba(40, 27, 17, 0.42);
+  font: inherit;
+  cursor: pointer;
+}
+#battleStatsTabs button:hover,
+#battleStatsTabs button.active {
+  color: white;
+  background: var(--text-shadow-color);
+}
 #battleStatsTools {
   position: absolute;
   top: 0.65rem;
@@ -494,10 +515,21 @@
   background: var(--text-shadow-color);
 }
 #battleStatsClose {
-  position: absolute;
-  top: 0.35rem;
-  right: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  float: right;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin-top: -1.35rem;
+  margin-right: -1.35rem;
+  border-radius: 50%;
+  line-height: 2rem;
+  text-align: center;
   font-size: 2rem;
+  color: var(--text-hl-color);
+  background: var(--final-background);
+  box-shadow: 0 0 0.45rem rgba(40, 27, 17, 0.75);
   cursor: pointer;
 }
 #battleStatsSummary {
@@ -604,6 +636,8 @@
   #specialRulesCard { padding: 1.25rem 1.2rem 1.4rem; }
   #battleStatsTools { position: static; justify-content: center; margin-bottom: 0.5rem; }
   #battleStatsCard h2 { margin-top: 0.5rem; }
+  #battleStatsTabs { gap: 0.25rem; }
+  #battleStatsTabs button { padding: 0.3rem 0.2rem; font-size: 0.78rem; }
   .stats-combo-card > div:first-child { width: 42%; }
   .stats-combo-card > div:last-child { width: 58%; }
   #configurator { top: calc(50% - 2.75rem); width: 94%; gap: 0.75rem; }

@@ -632,6 +632,9 @@ function setup(){
     if(event.key == "Enter" || event.key == " ") battleStats.unlockAllSpecials();
   });
   document.getElementById("resetAllData").addEventListener("click", function(){ battleStats.resetAllData(); });
+  var battleStatsTabs = document.querySelectorAll("#battleStatsTabs button");
+  for(var i=0; i<battleStatsTabs.length; i++)
+    battleStatsTabs[i].addEventListener("click", function(){ battleStats.showPackStats(this.dataset.pack); });
   document.getElementById("specialRulesButton").addEventListener("click", function(){
     document.getElementById("specialRulesPanel").style.visibility = "visible";
   });

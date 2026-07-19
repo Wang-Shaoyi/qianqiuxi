@@ -1,6 +1,7 @@
 class BattleStats {
   constructor(){
     this.recorded = false;
+    this.activeStatsPack = "12";
   }
 
   beginGame(){
@@ -29,7 +30,9 @@ class BattleStats {
     if(this.recorded) return;
     this.recorded = true;
 
+    var packKey = model.pack.join("");
     setCookie("qqxgamesplayed", [this.getNumber("qqxgamesplayed") + 1]);
+    setCookie("qqxgamesplayed" + packKey, [this.getNumber("qqxgamesplayed" + packKey) + 1]);
 
     var completedIDs = player.completeCombos.map(function(combo){ return combo.getId(); });
     var unlocked = this.getList("qqxunlockedcombos");
@@ -38,10 +41,10 @@ class BattleStats {
         unlocked.push(completedIDs[i]);
     setCookie("qqxunlockedcombos", unlocked);
 
-    var highScore = this.getNumber("qqxhighscore");
+    var highScore = this.getNumber("qqxhighscore" + packKey);
     if(player.score > highScore){
-      setCookie("qqxhighscore", [player.score]);
-      setCookie("qqxhighscorecombos", completedIDs);
+      setCookie("qqxhighscore" + packKey, [player.score]);
+      setCookie("qqxhighscorecombos" + packKey, completedIDs);
     }
   }
 
@@ -50,9 +53,7 @@ class BattleStats {
     return packID.substring(1).split("").map(Number);
   }
 
-  getAvailableCombos(){
-    var packs = this.getSelectedPacks();
-    model.setPack(packs);
+  getAvailableCombos(packs){
     var names = [];
     for(var i=0; i<packs.length; i++){
       var chars = COMMON_CHAR_LIST[packs[i]-1];
@@ -133,6 +134,46 @@ class BattleStats {
         : this.createLockedComboCard());
   }
 
+  showPackStats(packKey){
+    this.activeStatsPack = packKey;
+    var tabs = document.querySelectorAll("#battleStatsTabs button");
+    for(var i=0; i<tabs.length; i++)
+      tabs[i].classList.toggle("active", tabs[i].dataset.pack == packKey);
+
+    var previousPacks = model.pack ? model.pack.slice() : this.getSelectedPacks();
+    var packs = packKey.split("").map(Number);
+    model.setPack(packs);
+    var catalog = this.getAvailableCombos(packs);
+
+    var summary = document.getElementById("battleStatsSummary");
+    summary.textContent = "";
+    var values = [
+      ["已玩局数", this.getNumber("qqxgamesplayed" + packKey)],
+      [packKey.split("").join("+") + " 最高分", this.getNumber("qqxhighscore" + packKey)]
+    ];
+    for(var i=0; i<values.length; i++){
+      var item = document.createElement("div");
+      var label = item.appendChild(document.createElement("div"));
+      var value = item.appendChild(document.createElement("div"));
+      label.textContent = values[i][0];
+      value.textContent = values[i][1];
+      value.classList.add("battle-stat-value");
+      summary.appendChild(item);
+    }
+
+    var bestIDs = this.getList("qqxhighscorecombos" + packKey);
+    var bestCombos = [];
+    for(var i=0; i<bestIDs.length; i++){
+      var combo = catalog.find(function(item){ return item[3] == bestIDs[i]; });
+      if(combo != null && !bestCombos.includes(combo)) bestCombos.push(combo);
+    }
+    this.renderComboCards(document.getElementById("battleStatsBestCombos"), bestCombos, null);
+
+    var unlocked = this.getList("qqxunlockedcombos");
+    this.renderComboCards(document.getElementById("battleStatsCombos"), catalog, unlocked);
+    model.setPack(previousPacks);
+  }
+
   unlockAllSpecials(){
     var answer = window.prompt("岑缨的叔叔是谁？");
     if(answer == null) return;
@@ -162,37 +203,7 @@ class BattleStats {
   }
 
   show(){
-    var catalog = this.getAvailableCombos();
-    var summary = document.getElementById("battleStatsSummary");
-    summary.textContent = "";
-    var values = [
-      ["已玩局数", this.getNumber("qqxgamesplayed")],
-      ["个人最高分", this.getNumber("qqxhighscore")]
-    ];
-    for(var i=0; i<values.length; i++){
-      var item = document.createElement("div");
-      var label = document.createElement("div");
-      var value = document.createElement("div");
-      label.textContent = values[i][0];
-      value.textContent = values[i][1];
-      value.classList.add("battle-stat-value");
-      item.appendChild(label);
-      item.appendChild(value);
-      summary.appendChild(item);
-    }
-
-    var best = document.getElementById("battleStatsBestCombos");
-    var bestIDs = this.getList("qqxhighscorecombos");
-    var bestCombos = [];
-    for(var i=0; i<bestIDs.length; i++){
-      var combo = this.findComboByID(bestIDs[i]);
-      if(combo != null && !bestCombos.includes(combo)) bestCombos.push(combo);
-    }
-    this.renderComboCards(best, bestCombos, null);
-
-    var unlocked = this.getList("qqxunlockedcombos");
-    var comboList = document.getElementById("battleStatsCombos");
-    this.renderComboCards(comboList, catalog, unlocked);
+    this.showPackStats(this.getSelectedPacks().join(""));
 
     document.getElementById("battleStatsPanel").style.visibility = "visible";
   }
